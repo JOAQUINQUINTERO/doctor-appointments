@@ -18,6 +18,10 @@ const BookingModal: React.FC<BookingModalProps> = ({
     }
   };
 
+  const availableTimeSlots = doctor.availability.filter(
+    time => !doctor.bookedTimeSlots.includes(time)
+  );
+
   return (
     <div 
       className="modal-overlay"
@@ -30,7 +34,7 @@ const BookingModal: React.FC<BookingModalProps> = ({
         <div className="time-slots">
           <h3>Available Time Slots</h3>
           <div className="time-slot-grid" role="radiogroup" aria-label="Available time slots">
-            {doctor.availability.map((time) => (
+            {availableTimeSlots.map((time) => (
               <label
                 key={time}
                 className={`time-slot ${selectedTime === time ? 'selected' : ''}`}

@@ -6,6 +6,7 @@ export interface Doctor {
   photo: string;
   location: string;
   availability: string[];
+  bookedTimeSlots: string[];
 }
 
 export interface Appointment {

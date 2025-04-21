@@ -247,3 +247,51 @@ input:focus {
 .time-slot:focus-within {
   box-shadow: 0 0 0 2px #007bff;
 }
+
+.doctor-availability-container {
+  margin: 10px 0;
+}
+
+.doctor-availability-label {
+  margin-bottom: 5px;
+  color: #666;
+}
+
+.time-slots-display {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+}
+
+.available-slot {
+  background-color: #28a745;
+  color: white;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 0.9em;
+}
+
+.booked-slot {
+  background-color: #dc3545;
+  color: white;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 0.9em;
+  text-decoration: line-through;
+}
+
+.delete-button {
+  background-color: #dc3545;
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 4px;
+  cursor: pointer;
+  margin-top: 10px;
+  width: 100%;
+  transition: background-color 0.2s;
+}
+
+.delete-button:hover {
+  background-color: #c82333;
+}

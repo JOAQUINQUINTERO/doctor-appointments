@@ -4,57 +4,18 @@ import DoctorCard from './components/DoctorCard';
 import BookingModal from './components/BookingModal';
 import AppointmentsList from './components/AppointmentsList';
 import { Doctor, Appointment } from './types';
-
-const mockDoctors: Doctor[] = [
-  {
-    id: '1',
-    name: 'Dr. Sarah Johnson',
-    specialty: 'Cardiology',
-    rating: 5,
-    photo: 'https://img.freepik.com/free-photo/woman-doctor-wearing-lab-coat-with-stethoscope-isolated_1303-29791.jpg',
-    location: 'Downtown Medical Center',
-    availability: ['9:00 AM', '10:00 AM', '2:00 PM', '3:00 PM'],
-  },
-  {
-    id: '2',
-    name: 'Dr. Michael Chen',
-    specialty: 'Pediatrics',
-    rating: 4,
-    photo: 'https://img.freepik.com/free-photo/smiling-doctor-with-strethoscope-isolated-grey_651396-974.jpg',
-    location: 'Children\'s Hospital',
-    availability: ['8:00 AM', '11:00 AM', '1:00 PM', '4:00 PM'],
-  },
-  {
-    id: '3',
-    name: 'Dr. Emily Rodriguez',
-    specialty: 'Neurology',
-    rating: 5,
-    photo: 'https://img.freepik.com/free-photo/beautiful-young-female-doctor-looking-camera-office_1301-7807.jpg',
-    location: 'Neurological Institute',
-    availability: ['10:00 AM', '11:00 AM', '3:00 PM', '4:00 PM'],
-  },
-  {
-    id: '4',
-    name: 'Dr. James Wilson',
-    specialty: 'Dermatology',
-    rating: 4,
-    photo: 'https://img.freepik.com/free-photo/doctor-with-his-arms-crossed-white-background_1368-5790.jpg',
-    location: 'Skin Care Center',
-    availability: ['9:00 AM', '1:00 PM', '2:00 PM', '4:00 PM'],
-  }
-];
-
-const specialties = ['All', 'Cardiology', 'Pediatrics', 'Dermatology', 'Neurology'];
+import { mockDoctors, specialties } from './mockData';
 
 function App() {
   const [selectedSpecialty, setSelectedSpecialty] = useState('All');
   const [selectedDoctor, setSelectedDoctor] = useState<Doctor | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [appointments, setAppointments] = useState<Appointment[]>([]);
+  const [doctors, setDoctors] = useState<Doctor[]>(mockDoctors);
 
   const filteredDoctors = selectedSpecialty === 'All'
-    ? mockDoctors
-    : mockDoctors.filter(doctor => doctor.specialty === selectedSpecialty);
+    ? doctors
+    : doctors.filter(doctor => doctor.specialty === selectedSpecialty);
 
   const handleBookAppointment = (doctor: Doctor) => {
     setSelectedDoctor(doctor);
@@ -72,10 +33,43 @@ function App() {
         time,
         location: selectedDoctor.location,
       };
+      
+      // Update the doctor's booked time slots
+      const updatedDoctors = doctors.map(doctor => {
+        if (doctor.id === selectedDoctor.id) {
+          return {
+            ...doctor,
+            bookedTimeSlots: [...doctor.bookedTimeSlots, time]
+          };
+        }
+        return doctor;
+      });
+
+      setDoctors(updatedDoctors);
       setAppointments([...appointments, newAppointment]);
       setIsModalOpen(false);
       setSelectedDoctor(null);
     }
+  };
+
+  const handleDeleteAppointment = (appointmentId: string) => {
+    const appointmentToDelete = appointments.find(app => app.id === appointmentId);
+    if (!appointmentToDelete) return;
+
+    const updatedAppointments = appointments.filter(app => app.id !== appointmentId);
+    setAppointments(updatedAppointments);
+
+    const updatedDoctors = doctors.map(doctor => {
+      if (doctor.id === appointmentToDelete.doctorId) {
+        return {
+          ...doctor,
+          bookedTimeSlots: doctor.bookedTimeSlots.filter(time => time !== appointmentToDelete.time)
+        };
+      }
+      return doctor;
+    });
+
+    setDoctors(updatedDoctors);
   };
 
   return (
@@ -120,7 +114,10 @@ function App() {
           />
         )}
 
-        <AppointmentsList appointments={appointments} />
+        <AppointmentsList 
+          appointments={appointments} 
+          onDeleteAppointment={handleDeleteAppointment}
+        />
       </main>
     </div>
   );

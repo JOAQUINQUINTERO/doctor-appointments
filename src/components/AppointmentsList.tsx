@@ -3,9 +3,10 @@ import { Appointment } from '../types';
 
 interface AppointmentsListProps {
   appointments: Appointment[];
+  onDeleteAppointment: (appointmentId: string) => void;
 }
 
-const AppointmentsList: React.FC<AppointmentsListProps> = ({ appointments }) => {
+const AppointmentsList: React.FC<AppointmentsListProps> = ({ appointments, onDeleteAppointment }) => {
   return (
     <div className="appointments-list" role="region" aria-label="My Appointments">
       <h2>My Appointments</h2>
@@ -25,6 +26,13 @@ const AppointmentsList: React.FC<AppointmentsListProps> = ({ appointments }) => 
               <p>Date: {appointment.date}</p>
               <p>Time: {appointment.time}</p>
               <p>Location: {appointment.location}</p>
+              <button
+                className="delete-button"
+                onClick={() => onDeleteAppointment(appointment.id)}
+                aria-label={`Delete appointment with Dr. ${appointment.doctorName}`}
+              >
+                Cancel Appointment
+              </button>
             </li>
           ))}
         </ul>

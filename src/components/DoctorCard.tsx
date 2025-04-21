@@ -7,6 +7,11 @@ interface DoctorCardProps {
 }
 
 const DoctorCard: React.FC<DoctorCardProps> = ({ doctor, onBookAppointment }) => {
+  const availableSlots = doctor.availability.filter(
+    time => !doctor.bookedTimeSlots.includes(time)
+  );
+  const bookedSlots = doctor.bookedTimeSlots;
+
   return (
     <div 
       className="doctor-card"
@@ -30,9 +35,17 @@ const DoctorCard: React.FC<DoctorCardProps> = ({ doctor, onBookAppointment }) =>
         <p className="doctor-location" aria-label={`Location: ${doctor.location}`}>
           {doctor.location}
         </p>
-        <p className="doctor-availability" aria-label={`Availability: ${doctor.availability.join(', ')}`}>
-          Available: {doctor.availability.join(', ')}
-        </p>
+        <div className="doctor-availability-container">
+          <p className="doctor-availability-label">Available Time Slots:</p>
+          <div className="time-slots-display">
+            {availableSlots.map((time) => (
+              <span key={time} className="available-slot">{time}</span>
+            ))}
+            {bookedSlots.map((time) => (
+              <span key={time} className="booked-slot">{time}</span>
+            ))}
+          </div>
+        </div>
         <button
           className="book-button"
           onClick={() => onBookAppointment(doctor)}
